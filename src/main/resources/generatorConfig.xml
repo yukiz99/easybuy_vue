@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE generatorConfiguration
+        PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
+        "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
+ 
+<generatorConfiguration>
+    <!--mysql 连接数据库jar 这里选择自己本地位置;
+    如果不知道maven本地仓库地址，可以使用EveryThing工具全局搜索mysql-connector-java，找到jar包位置；
+    也可以手动下载一个jar放在指定位置，进行引用。
+    -->
+    <classPathEntry location="E:/mvnRespo/mysql/mysql-connector-java/5.1.47/mysql-connector-java-5.1.47.jar"/>
+ 
+    <context id="testTables" targetRuntime="MyBatis3">
+        <commentGenerator>
+            <!-- 是否去除自动生成的注释,true：是,false:否 -->
+            <property name="suppressAllComments" value="true"/>
+        </commentGenerator>
+ 
+        <jdbcConnection driverClass="com.mysql.jdbc.Driver"
+                        connectionURL="jdbc:mysql://localhost:3306/easybuy" userId="root"
+                        password="root">
+        </jdbcConnection>
+ 
+ 
+        <!-- 指定javaBean生成的位置-->
+        <javaModelGenerator targetPackage="com.zhu.easybuy.pojo" targetProject="src/main/java">
+            <property name="enableSubPackages" value="false"/>
+            <property name="trimStrings" value="true"/>
+        </javaModelGenerator>
+ 
+        <!--  指定mapper映射文件生成的位置-->
+        <sqlMapGenerator targetPackage="mapper" targetProject="src/main/resources">
+            <property name="enableSubPackages" value="false"/>
+        </sqlMapGenerator>
+ 
+        <!-- 指定mapper接口生成的位置-->
+        <javaClientGenerator type="XMLMAPPER" targetPackage="com.zhu.easybuy.mapper" targetProject="src/main/java">
+            <property name="enableSubPackages" value="false"/>
+        </javaClientGenerator>
+ 
+        <!-- 指定数据库表-->
+        <table tableName="easybuy_news" domainObjectName="News"></table>
+        <table tableName="easybuy_order" domainObjectName="Order"></table>
+        <table tableName="easybuy_order_detail" domainObjectName="OrderDetail"></table>
+        <table tableName="easybuy_product" domainObjectName="Product"></table>
+        <table tableName="easybuy_product_category" domainObjectName="ProductCategory"></table>
+        <table tableName="easybuy_user" domainObjectName="User"></table>
+        <table tableName="easybuy_user_address" domainObjectName="UserAddress"></table>
+    </context>
+</generatorConfiguration>

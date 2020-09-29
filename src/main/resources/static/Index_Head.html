@@ -1,0 +1,49 @@
+<div class="soubg" id="head">
+	<div class="sou">
+        <span class="fr">
+            <span class="fl" id="userOfUserName"></span>
+          <!--  <span class="fl">&nbsp;|&nbsp;<a href="Login.html">登录</a></span>-->
+            <span class="fl">你好，<span v-if="user.userName==null">请<a href="Login.html">登录</a></span>
+            					   <span v-else>{{user.userName}}</span>&nbsp; 
+                             <a href="Regist.html" style="color:#ff4e00;">免费注册</a>&nbsp;
+                             <a v-if="user.userName!=null" @click="logout" style="color:#ff4e00;">退出</a>&nbsp;
+            </span>
+        	<span class="fl">&nbsp;|&nbsp;<a href="Member_Order.html">我的订单</a></span>
+        	<span class="fl">&nbsp;|&nbsp;<a href="Member_Collect.html">我的收藏</a></span>
+            <span class="fl">|&nbsp;关注我们：</span>
+            <span class="s_sh"><a href="#" class="sh1">新浪</a><a href="#" class="sh2">微信</a></span>
+            <span class="fr">|&nbsp;<a href="#">手机版&nbsp;<img src="images/s_tel.png" align="absmiddle" /></a></span>
+        </span>
+    </div>
+</div>
+<script src="js/vue.js"></script>
+ <script src="js/common.js"></script>
+<script>
+//ajax请求，无参
+
+var headVue=new Vue({
+	el:"#head",
+	data:{
+		user:{}
+	},
+	created(){
+		ajaxRequest("api/member/user/getUserOfLogin","GET",result=>{
+			if(result.flag){
+				this.user=result.data;
+			}
+		});
+	},
+	methods:{
+		 logout(){
+			 ajaxRequest("api/member/user/logout","GET",result=>{
+				 if(result.flag){
+					 window.location.href="Index.html"
+				 }
+			 });
+	     }
+	}
+});
+	
+ //head要做的。
+ 
+</script>

@@ -1,0 +1,83 @@
+<div class="menu_bg">
+	<div class="menu" id="menu">
+    	<!--Begin 商品分类详情 Begin-->    
+    	<div class="nav" >
+        	<div class="nav_t">全部商品分类</div>
+            <div class="leftNav none">
+                <ul>      
+                    <li v-for="category1 in categoryList">
+                    	<div class="fj">
+                        	<span class="n_img"><span></span><img src="images/nav1.png" /></span>
+                            <span class="fl"><a :href="`ProductList.html?categoryId=${category1.id}`">{{category1.name}}</a></span>
+                        </div>
+                        <div class="zj">
+                            <div class="zj_l">
+                                <div class="zj_l_c" v-for="category2 in category1.children">
+                                    <h2><a :href="`ProductList.html?categoryId=${category2.id}`">{{category2.name}}</a></h2>
+                                    <div v-for="category3 in category2.children">
+                                    	<a :href="`ProductList.html?categoryId=${category3.id}`">{{category3.name}}</a>|
+                                    </div>
+                                    
+                                </div>
+                            </div>
+                            <div class="zj_r">
+                                <a href="#"><img src="images/n_img1.jpg" width="236" height="200" /></a>
+                                <a href="#"><img src="images/n_img2.jpg" width="236" height="200" /></a>
+                            </div>
+                        </div>
+                    </li>
+                   
+                                   	
+                </ul>            
+            </div>
+        </div>  
+        <!--End 商品分类详情 End-->                                                     
+    	<ul class="menu_r">
+        	<li><a href="Index.html">首页</a></li>
+        	<div  v-for="category1 in categoryList">
+        		<li><a :href="`ProductList.html?categoryId=${category1.id}`">{{category1.name}}</a></li>
+        	</div>
+        </ul>
+        <div class="m_ad">中秋送好礼！</div>
+    </div>
+</div>
+
+
+<script src="js/vue.js"></script>
+<script src="js/common.js"></script>
+<script>
+
+build_menu();
+//渲染左侧分类与专题
+function build_menu(){
+	  ajaxRequest("api/member/category/findAllCategory","GET",function(result){
+		   var menu=new Vue({
+				el:"#menu",
+				data:{
+					categoryList:result.data
+				},
+				mounted(){
+					$(".menu .nav").hover(
+					       function(){
+					    	   $(".menu .leftNav").removeClass("none"); 
+					       },
+					       function(){
+					    	  $(".menu .leftNav").addClass("none");
+					       }
+					);
+					
+					 $(".leftNav ul li").hover(
+					        	function(){
+									$(this).find(".fj").addClass("nuw");
+									$(this).find(".zj").show();
+								},
+								function(){
+									$(this).find(".fj").removeClass("nuw");
+									$(this).find(".zj").hide();
+								}
+				        	)
+				}
+			})
+	  });	
+}
+</script>

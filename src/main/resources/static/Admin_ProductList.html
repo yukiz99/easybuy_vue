@@ -1,0 +1,412 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<link type="text/css" rel="stylesheet" href="css/style.css" />
+
+        
+    <script type="text/javascript" src="js/jquery-1.8.2.min.js"></script>
+    
+    <script type="text/javascript" src="js/jquery-1.11.1.min_044d0927.js"></script>
+    <script type="text/javascript" src="js/shade.js"></script>    
+        
+    
+<title>用户列表</title>
+</head>
+<body>  
+<!--Begin Header Begin-->
+<!--End Header End--> 
+<div id="Index_Head">
+ </div>
+ 
+  <div id="Index_Top">
+ </div>
+
+
+
+
+<div class="i_bg bg_color" id="allProduct">
+    <!--Begin 用户中心 Begin -->
+	<div class="m_content">
+	<!-- 此处要加载Admin_Left.html页面 -->
+   		<div id="Admin_Left">
+		 </div>
+   		
+			<div class="m_right">
+	            <div class="mem_tit">商品列表</div>
+	            <a @click="getAddProduct" class="add_b" align="right" style=" margin-bottom:20px;margin-right:50px">添加商品</a>
+	 			<table border="0" class="order_tab" style="text-align:center; width:900px;" cellspacing="0" cellpadding="0">
+	                <tr>
+	                    <td width="200">商品名称</td>
+	                    <td width="200">商品图片</td>
+	                    <td width="100">库存</td>
+	                    <td width="200">价格</td>
+	                    <td width="300">操作</td>
+	                </tr>
+	                <tr v-for="product in pageInfo.list">
+	                    <td>{{product.name}}</td>
+	                    <td><div class="sm_img"><img :src="`files/${product.fileName}`" width="48" height="48" /></div></td>
+	                    <td>{{product.stock}}</td>
+	                    <td>￥{{product.price}}</td>
+	                    <td><a @click="getUpdateProduct(product.id)">修改</a>&nbsp; &nbsp; &nbsp;  &nbsp; <a @click="deleteProduct(product.id)">删除</a></td>
+	                </tr>
+	            </table>
+	             <div class="pages">
+                	<a @click="page(pageNum-1)" class="p_pre">上一页</a>
+                	<a v-for="num in pageInfo.navigatepageNums" @click="page(num)" :class="{cur:pageNum==num}">{{num}}</a>
+                	<a @click="page(pageNum+1)" class="p_pre">下一页</a>
+                </div>  
+	      </div>
+
+</div>
+
+
+
+      <!--Begin 弹出层-添加商品 Begin-->
+	<div id="fade" class="black_overlay"></div>
+    <div id="addProductDiv" class="white_content">             
+         <div class="white_d">
+            <div class="notice_t">
+                <span class="fr" style="margin-top:10px; cursor:pointer;" onclick="CloseDiv('addProductDiv','fade')"><img src="images/close.gif" /></span>
+            	<div><span style="color:#3e3e3e; font-size:18px; font-weight:bold;">添加商品</span></div>
+            </div>
+            <div class="notice_c">
+           		<table border="0" align="center" cellspacing="0" cellpadding="0">
+                  <tr>
+                    <td><font color="#ff4e00">*</font>&nbsp;一级分类：</td>
+                    <td>
+                    	<select v-model="addProductValue.categoryLevel1Id" @change="changeCategory1(addProductValue,1)">
+                    	  <option v-for="category in category1List" :value="category.id">{{category.name}}</option>
+                    	</select>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><font color="#ff4e00">*</font>&nbsp;二级分类：</td>
+                    <td>
+                        <select v-model="addProductValue.categoryLevel2Id" @change="changeCategory2(addProductValue,1)">
+                    	  <option v-for="category in category2List" :value="category.id">{{category.name}}</option>
+                    	</select>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>三级分类：</td>
+                    <td>
+                        <select v-model="addProductValue.categoryLevel3Id">
+                    	  <option v-for="category in category3List" :value="category.id">{{category.name}}</option>
+                    	</select>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><font color="#ff4e00">*</font>&nbsp;商品名称：</td><td><input v-model="addProductValue.name"/></td>
+                  </tr>
+                  
+                  <tr>
+                    <td><font color="#ff4e00">*</font>&nbsp;商品图片：</td>
+                    <td>
+                       <input type="file"  ref="file" accept="image/jpg,image/jpeg,image/png,image/PNG"/>
+                    </td>
+                    
+                  </tr>
+                  <tr>
+                    <td><font color="#ff4e00">*</font>&nbsp;单价：</td><td><input v-model="addProductValue.price"/></td>
+                  </tr>
+                    <tr>
+                    <td><font color="#ff4e00">*</font>&nbsp;库存：</td><td><input v-model="addProductValue.stock"/></td>
+                  </tr>
+                   <tr>
+                    <td>描述：</td><td><input v-model="addProductValue.description"/></td>
+                  </tr>
+                  <tr height="50" valign="bottom">
+                  	<td>&nbsp;</td>
+                    <td><a @click="addProduct" class="b_sure">确认添加</a></td>
+                  </tr>
+                </table>
+                    
+            </div>
+        </div>
+    </div>    
+    <!--End 弹出层-添加商品  End-->
+       
+
+      <!--Begin 弹出层-编辑商品 Begin-->
+	<div id="fade2" class="black_overlay"></div>
+    <div id="editProductDiv" class="white_content">             
+         <div class="white_d">
+            <div class="notice_t">
+                <span class="fr" style="margin-top:10px; cursor:pointer;" onclick="CloseDiv('editProductDiv','fade2')"><img src="images/close.gif" /></span>
+            	<div><span style="color:#3e3e3e; font-size:18px; font-weight:bold;">编辑商品</span></div>
+            </div>
+            <div class="notice_c">
+           		<table border="0" align="center" cellspacing="0" cellpadding="0">
+                  <tr>
+                    <td><font color="#ff4e00">*</font>&nbsp;一级分类：</td>
+                    <td>
+                    	<select v-model="editProductValue.categoryLevel1Id" @change="changeCategory1(editProductValue,2)">
+                    	  <option v-for="category in category1List" :value="category.id">{{category.name}}</option>
+                    	</select>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><font color="#ff4e00">*</font>&nbsp;二级分类：</td>
+                    <td>
+                        <select v-model="editProductValue.categoryLevel2Id" @change="changeCategory2(editProductValue,2)">
+                    	  <option v-for="category in category2List" :value="category.id">{{category.name}}</option>
+                    	</select>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>三级分类：</td>
+                    <td>
+                        <select v-model="editProductValue.categoryLevel3Id">
+                    	  <option v-for="category in category3List" :value="category.id">{{category.name}}</option>
+                    	</select>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><font color="#ff4e00">*</font>&nbsp;商品名称：</td><td><input v-model="editProductValue.name"/></td>
+                  </tr>
+                  
+                  <tr>
+                    <td>商品图片：</td>
+                    <td>
+                       <input type="file"  ref="file2" accept="image/jpg,image/jpeg,image/png,image/PNG"/>
+                    </td>
+                    
+                  </tr>
+                  <tr>
+                    <td><font color="#ff4e00">*</font>&nbsp;单价：</td><td><input v-model="editProductValue.price"/></td>
+                  </tr>
+                   <tr>
+                    <td><font color="#ff4e00">*</font>&nbsp;库存：</td><td><input v-model="editProductValue.stock"/></td>
+                  </tr>
+                   <tr>
+                    <td>描述：</td><td><input v-model="editProductValue.description"/></td>
+                  </tr>
+                  <tr height="50" valign="bottom">
+                  	<td>&nbsp;</td>
+                    <td><a @click="updateProduct" class="b_sure">确认修改</a></td>
+                  </tr>
+                </table>
+                    
+            </div>
+        </div>
+    </div>    
+    <!--End 弹出层-编辑商品  End-->
+    
+       
+       
+       
+	<!--End 用户中心 End--> 
+    <!--Begin Footer Begin -->
+    <!--End Footer End -->   
+     <div id="Index_Footer">
+     </div> 
+       
+</div>
+
+<script src="js/vue.js"></script>
+<script src="js/common.js"></script>
+<script>
+$(function () {
+	 ajaxRequest("api/member/user/getUserOfLogin","GET",result=>{
+	    	if(!result.flag){
+	    		window.location.href="Login.html"
+	        	alert(result.msg);
+	    	}else{
+	    		if(result.data.type==0){
+	    			window.location.href="Index.html"
+	    			alert("没有权限")
+	    		}
+	    	}
+	    	
+	  })
+	    
+   $("#Index_Head").load("Index_Head.html");
+   $("#Index_Top").load("Index_Top.html");
+   $('#Admin_Left').load('Admin_Left.html');
+   $("#Index_Footer").load("Index_Footer.html");
+})
+
+	var allProductVue=new Vue({
+			el:"#allProduct",
+			data:{
+				pageInfo:{},
+				pageNum:1,
+				pageSize:10,
+				addProductValue:{},
+				editProductValue:{},
+				category1List:[],
+				category2List:[],
+				category3List:[]
+			},
+			created(){
+				this.page(1);
+			},
+			methods:{
+				 page(pageNum){
+					   var data={'pageNum':pageNum,'pageSize':this.pageSize}
+					   ajaxRequestWithParams("api/admin/product/allProduct","GET",data,result=>{
+						   this.pageInfo=result.data;
+						   this.pageNum=this.pageInfo.pageNum
+					   });
+				   },
+				deleteProduct(productId){
+					var _this=this;
+					ajaxRequestWithParams("api/admin/product/deleteProduct","GET",{'id':productId},result=>{
+						alert("删除成功");
+						this.page(this.pageNum);
+					});
+				},
+				getAddProduct(){
+					   ShowDiv('addProductDiv','fade');
+					   this.category1List=this.getCategoryChildren(0);
+				},
+				addProduct(){
+					this.addProductValue.file=this.$refs.file.files[0];
+					if(!this.valid(this.addProductValue)||this.addProductValue.file==null)
+						return;
+					if(this.addProductValue.categoryLevel3Id==null)
+						this.addProductValue.categoryLevel3Id=0
+					
+					var formData = new FormData();
+					Object.keys(this.addProductValue).forEach((key) => {
+					  formData.append(key, this.addProductValue[key]);
+					});
+					$.ajax({
+						url:"api/admin/product/addProduct",
+						type:"POST",
+						headers:{'token':localStorage.token},
+						data:formData,
+						contentType:false,
+			            processData:false,
+						success:result=>{
+							alert(result.msg);
+							CloseDiv('addProductDiv','fade');
+							this.page(this.pageNum);
+							$("#Index_Top").load("Index_Top.html");
+							
+						}
+					});
+					
+					
+				},
+				getUpdateProduct(productId){
+					ajaxRequestWithParams("api/admin/product/findProductById","GET",{'id':productId},result=>{
+						this.editProductValue=result.data;
+						this.category1List=this.getCategoryChildren(0);
+						this.category2List=this.getCategoryChildren(this.editProductValue.categoryLevel1Id);
+						this.category3List=this.getCategoryChildren(this.editProductValue.categoryLevel2Id);
+						ShowDiv('editProductDiv','fade2');
+					})
+				},
+				updateProduct(){
+					 this.editProductValue.file=this.$refs.file2.files[0];
+					 if(!this.valid(this.editProductValue))
+							return;
+						if(this.editProductValue.categoryLevel3Id==null)
+							this.editProductValue.categoryLevel3Id=0
+							
+						var formData = new FormData();
+						Object.keys(this.editProductValue).forEach((key) => {
+						  formData.append(key, this.editProductValue[key]);
+						});
+						$.ajax({
+							url:"api/admin/product/updateProduct",
+							type:"POST",
+							headers:{'token':localStorage.token},
+							data:formData,
+							contentType:false,
+				            processData:false,
+							success:result=>{
+								alert(result.msg);
+								CloseDiv('editProductDiv','fade2');
+								this.page(this.pageNum);
+								$("#Index_Top").load("Index_Top.html");//刷新一下购物车
+							}
+						});
+					
+				},
+				//显示图片
+				/**lookImg(){
+					 var file= $("#productFileName")[0].files[0];
+					 this.addProductValue.file=file;
+					 var reads = new FileReader();
+					 reads.readAsDataURL(file);
+					 reads.onload = function(e) {
+						 $('#productImg').attr("src",this.result);
+					  }
+				   },**/
+				   getCategoryChildren(id){
+					   var list;
+					   $.ajax({
+						   url:"api/member/category/findAllCategoryByParentId",
+						   type:"GET",
+						   headers:{"token":localStorage.token},
+						   data:{'id':id},
+						   async:false,
+						   success:function(result){
+							   list=result.data
+						   },
+						   error:function(err){alert("错误")}
+					   })
+					   return list
+				   },
+				  changeCategory1(productValue,type){
+					   this.category1List=this.getCategoryChildren(0);
+					   if(productValue.categoryLevel1Id==null){
+						   this.category2List=[]
+					   }else{
+						   this.category2List=this.getCategoryChildren(productValue.categoryLevel1Id);
+					   }
+					   this.category3List=[]
+					   productValue.categoryLevel2Id=null;
+					   productValue.categoryLevel3Id=null;
+					   if(type==1){
+						   this.addProductValue=productValue;
+					   }else{
+						   this.editProductValue=productValue;
+					   }
+				   },
+				   changeCategory2(productValue,type){
+					   if(productValue.categoryLevel2Id==null){
+						   this.category3List=[]
+					   }else{
+						   this.category3List=this.getCategoryChildren(productValue.categoryLevel2Id);
+					   }
+					   productValue.categoryLevel3Id=null;
+					   if(type==1){
+						   this.addProductValue=productValue;
+					   }else{
+						   this.editProductValue=productValue;
+					   }
+				   },
+				   isEmpty(val){
+		    	    	 if(val==null||val.length<=0){
+		    	    		 return true
+		    	    	 }
+		    	    	 return false
+		    	     },
+		    	     valid(product){
+		    	    		if(product.categoryLevel1Id==null||product.categoryLevel2Id==null||this.isEmpty(product.name)||
+		    	    				this.isEmpty(product.price)||this.isEmpty(product.stock)){
+		        	     		alert("请填写完整")
+		        	     		return false
+		        	     	}
+		    	    		return true
+		    	     }
+				
+				   
+			}
+		});
+
+	
+	
+</script>
+</body>
+</html>
+
+
+
+
+
+

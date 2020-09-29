@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.zhu.easybuy.mapper.UserAddressMapper">
+	
+	<!-- 
+	private Integer id;//主键id
+	
+	private Integer userId;//用户主键
+	private String address;//地址
+	private java.util.Date createTime;//创建时间
+	private Integer isDefault;//是否是默认地址（1:是 0否）
+	private String remark;//备注
+	
+	 -->
+	<select id="findAllByUserId" resultType="UserAddress">
+		select * from easybuy_user_address where userId=#{userId}
+	</select>
+	
+	<select id="findAllById" resultType="UserAddress">
+	    select*from easybuy_user_address where id=#{id}
+	</select>
+	
+	<insert id="add">
+	    insert into easybuy_user_address 
+	    value(0,#{userId},#{address},#{createTime},#{isDefault},#{remark})
+	</insert>
+	
+	<update id="update">
+	    update easybuy_user_address set address=#{address} ,remark=#{remark} where id=#{id}
+	</update>
+	
+	<delete id="delete">
+	    delete from easybuy_user_address where id=#{id}
+	</delete>
+	<delete id="deleteByUser">
+	    delete from easybuy_user_address where userId=#{userId}
+	</delete>
+	
+	<update id="setDefault1">
+	    update easybuy_user_address set isDefault=0 where isDefault=1
+	</update>
+	<update id="setDefault2">
+	    update easybuy_user_address set isDefault=1 where id=#{id}
+	</update>
+</mapper>

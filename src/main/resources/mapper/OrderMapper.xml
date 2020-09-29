@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.zhu.easybuy.mapper.OrderMapper">
+	
+	<!-- 
+		private Integer id;//主键
+
+
+	
+	private Integer userId;//用户主键
+	private String loginName;//
+	private String userAddress;//用户地址
+	private Date createTime;//创建时间
+	private Float cost;//总消费
+	private String serialNumber;//订单号
+	
+	 -->
+	 
+	<select id="findAll" resultType="Order">
+	   select * from easybuy_order
+	</select>
+	<select id="findAllByUser" resultType="Order">
+	   select*from easybuy_order where userId=#{userId}
+	</select>
+	<select id="findById" resultType="Order">
+	   select*from easybuy_order where id=#{id}
+	</select>
+	<insert id="add" useGeneratedKeys="true" keyProperty="id"  keyColumn="id">
+		insert into easybuy_order value(0,#{userId},#{loginName},#{userAddress},#{createTime},#{cost},#{serialNumber})
+	</insert>
+	<delete id="delete">
+	    delete  from easybuy_order where id=#{id}
+	</delete>
+	<delete id="deleteByUser">
+		delete  from easybuy_order where userId=#{userId}
+	</delete>
+</mapper>

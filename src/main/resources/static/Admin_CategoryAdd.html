@@ -1,0 +1,217 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<link type="text/css" rel="stylesheet" href="css/style.css" />
+
+        
+    <script type="text/javascript" src="js/jquery-1.8.2.min.js"></script>
+    
+    <script type="text/javascript" src="js/jquery-1.11.1.min_044d0927.js"></script>
+    <script type="text/javascript" src="js/shade.js"></script>    
+        
+    
+<title>用户列表</title>
+</head>
+<body>  
+<!--Begin Header Begin-->
+<!--End Header End--> 
+<div id="Index_Head">
+ </div>
+ 
+  <div id="Index_Top">
+ </div>
+
+
+
+
+<div class="i_bg bg_color" id="category">
+    <!--Begin 用户中心 Begin -->
+	<div class="m_content">
+	<!-- 此处要加载Admin_Left.html页面 -->
+   		<div id="Admin_Left">
+		 </div>
+   		
+			<div class="m_right">
+	            <div class="mem_tit">添加分类</div>
+	            <div>
+	                <div>添加一级分类</div>
+		 			<table border="0" class="order_tab" style="width:930px;" cellspacing="0" cellpadding="0">
+		 			   <tr>
+		 			     <td>一级分类</td>
+		 			     <td><input v-model="level1Name"></input></td>
+		 			   </tr>
+		 			    <tr>
+		 			     <td colspan="2" align="right"><a class="add_b" @click="add1">添加</a></td>
+		 			   </tr>
+		 			</table>
+		        </div>
+		        
+		        <div>
+	                <div>添加二级分类</div>
+		 			<table border="0" class="order_tab" style="width:930px;" cellspacing="0" cellpadding="0">
+		 			   <tr>
+		 			     <td>一级分类</td>
+		 			     <td>
+		 			       <select v-model="level1Id" @change="change1()">
+		 			        <option v-for="c in category1List" :value="c.id">{{c.name}}</option>
+		 			       </select>
+		 			     </td>
+		 			   </tr>
+		 			    <tr>
+		 			     <td>二级分类</td>
+		 			     <td><input v-model="level2Name"></input></td>
+		 			   </tr>
+		 			    <tr>
+		 			     <td colspan="2" align="right"><a class="add_b" @click="add2">添加</a></td>
+		 			   </tr>
+		 			</table>
+		        </div>
+       
+       		  <div>添加三级分类</div>
+		 			<table border="0" class="order_tab" style="width:930px;" cellspacing="0" cellpadding="0">
+		 			   <tr>
+		 			     <td>一级分类</td>
+		 			     <td>
+		 			       <select v-model="level1Id" @change="change1()">
+		 			        <option v-for="c in category1List" :value="c.id">{{c.name}}</option>
+		 			       </select>
+		 			     </td>
+		 			   </tr>
+		 			    <tr>
+		 			     <td>二级分类</td>
+		 			     <td>
+		 			       <select v-model="level2Id">
+		 			        <option v-for="c in category2List" :value="c.id">{{c.name}}</option>
+		 			       </select>
+		 			     </td>
+		 			   </tr>
+		 			   <tr>
+		 			     <td>三级分类</td>
+		 			     <td><input v-model="level3Name"></input></td>
+		 			   </tr>
+		 			    <tr>
+		 			     <td colspan="2" align="right"><a class="add_b" @click="add3">添加</a></td>
+		 			   </tr>
+		 			</table>
+		 			
+		        </div>
+	 			
+	      </div>
+
+</div>
+
+       
+       
+       
+	<!--End 用户中心 End--> 
+    <!--Begin Footer Begin -->
+    <!--End Footer End -->   
+     <div id="Index_Footer">
+     </div> 
+       
+</div>
+
+<script src="js/vue.js"></script>
+<script src="js/common.js"></script>
+<script>
+$(function () {
+	 ajaxRequest("api/member/user/getUserOfLogin","GET",result=>{
+	    	if(!result.flag){
+	    		window.location.href="Login.html"
+	        	alert(result.msg);
+	    	}else{
+	    		if(result.data.type==0){
+	    			window.location.href="Index.html"
+	    			alert("没有权限")
+	    		}
+	    	}
+	    	
+	  })
+	    
+   $("#Index_Head").load("Index_Head.html");
+   $("#Index_Top").load("Index_Top.html");
+   $('#Admin_Left').load('Admin_Left.html');
+   $("#Index_Footer").load("Index_Footer.html");
+})
+
+var addCategoryVue=new Vue({
+	el:"#category",
+	data:{
+		level1Id:null,
+		level2Id:null,
+		level1Name:null,
+		level2Name:null,
+		level3Name:null,
+		category1List:[],
+		category2List:[]
+	},
+	created(){
+		this.init();
+	},
+	methods:{
+		init(){
+			this.category1List=this.getCategoryChildren(0);
+		},
+		 getCategoryChildren(id){
+			   var list;
+			   $.ajax({
+				   url:"api/member/category/findAllCategoryByParentId",
+				   type:"GET",
+				   headers:{"token":localStorage.token},
+				   data:{'id':id},
+				   async:false,
+				   success:function(result){
+					   list=result.data
+				   },
+				   error:function(err){alert(err)}
+			   })
+			   return list
+		   },
+		   change1(){
+			   if(this.level1Id==null){
+				   this.category2List=[]
+			   }else{
+				   this.category2List=this.getCategoryChildren(this.level1Id);
+			   }
+			   this.level2Id=null;
+		   },
+		   add1(){
+			  if(this.level1Name==""||this.level1Name==null){
+				  alert("请填写完整")
+				  return;
+			  }
+			  this.add(this.level1Name,0,1);
+			  
+		   },
+		   add2(){
+			   if(this.level1Id==null||this.level2Name==""||this.level2Name==null){
+					  alert("请填写完整")
+					  return;
+				  }
+			  this.add(this.level2Name,this.level1Id,2)
+		   },
+		   add3(){
+			   if(this.level1Id==null||this.level2Id==null||this.level3Name==""||this.level3Name==null){
+					  alert("请填写完整")
+					  return;
+				  }
+			   this.add(this.level3Name,this.level2Id,3)
+		   },
+		   add(name,parentId,type){
+			   var data={'name':name,'parentId':parentId,'type':type};
+			   ajaxRequestWithParams("api/admin/category/addCategory","POST",data,result=>{
+				   alert(result.msg)
+			   });
+		   }
+	}
+});
+</script>
+</body>
+</html>
+
+
+
+
+
+

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.zhu.easybuy.mapper.ProductCategoryMapper">
+	
+	<select id="findAll" resultType="ProductCategory">
+		select * from easybuy_product_category
+	</select>
+	
+	<select id="findById" resultType="ProductCategory">
+		select * from easybuy_product_category where id= #{id}
+	</select>
+	<select id="findByName" resultType="ProductCategory">
+	    select*from easybuy_product_category where name=#{name}
+	</select>
+	
+	<select id="findAllByType" resultType="ProductCategory">
+		select * from easybuy_product_category where type= #{type}
+	</select>
+	
+	<select id="findAllByParentId" resultType="ProductCategory">
+		select * from easybuy_product_category where parentId= #{parentId}
+	</select>
+	
+	<select id="findAllNoType" resultType="ProductCategory">
+	   select*from easybuy_product_category 
+	</select>
+	<insert id="add">
+	    insert into easybuy_product_category value(0,#{name},#{parentId},#{type},#{iconClass})
+	</insert>
+	
+	<delete id="delete">
+		delete from easybuy_product_category where id=#{id}
+	</delete>
+	
+	
+
+	
+</mapper>

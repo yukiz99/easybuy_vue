@@ -1,0 +1,206 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<link type="text/css" rel="stylesheet" href="css/style.css" />
+    
+    <script type="text/javascript" src="js/jquery-1.8.2.min.js"></script>
+    
+    <script type="text/javascript" src="js/jquery-1.11.1.min_044d0927.js"></script>
+    <!-- <script type="text/javascript" src="js/menu.js"></script>     -->
+                
+	<script type="text/javascript" src="js/n_nav.js"></script>   
+    
+   <!--  <script type="text/javascript" src="js/num.js">
+    	var jq = jQuery.noConflict();
+    </script>     
+    -->
+    <script type="text/javascript" src="js/shade.js"></script>
+    
+<title>尤洪</title>
+</head>
+<body>  
+<!--Begin Header Begin-->
+<!--End Header End--> 
+ <div id="Index_Head">
+ </div>
+
+ 
+  <div id="Index_Top">
+ </div>
+
+<!--Begin Menu Begin-->
+<!--End Menu End--> 
+<div id="Index_Menu">
+</div>
+
+
+
+
+<div class="i_bg" id="cart">  
+    <div class="content mar_20">
+    	<img src="images/img1.jpg" />        
+    </div>
+    
+    <!--Begin 第一步：查看购物车 Begin -->
+    <div  v-if="cart!=null && cartSize!=0" class="content mar_20">
+    	<table border="0" class="car_tab" style="width:1200px; margin-bottom:50px;" cellspacing="0" cellpadding="0">
+          <tr>
+            <td class="car_th" width="250">商品名称</td>
+            <td class="car_th" width="150">购买数量</td>
+            <td class="car_th" width="150">单价</td>
+            <td class="car_th" width="150">小计</td>
+            <td class="car_th" width="150">返还积分</td>
+            <td class="car_th" width="200">操作</td>
+          </tr>
+        
+          <tr v-for="(value,key) in cart.map">
+            <td>
+            	<div class="c_s_img"><img :src="`files/${value.fileName}`" width="73" height="73" /></div>
+                <a :href="`Product.html?id=${value.productId}`">{{value.productName}}</a>
+            </td>
+            <td align="center">
+            	<div class="c_num">
+                    <input type="button" value="" @click="cartJianUpdate($event)" class="car_btn_1" />
+                	<input type="text" :value="value.count"  :productId="value.productId" @change="changeCount(value.count,value.productId,$event)" class="car_ipt" />  
+                    <input type="button" value="" @click="cartAddUpdate($event);" class="car_btn_2" />
+                </div>
+            </td>
+            <td align="center">￥{{value.price}}</td>
+            <td align="center" style="color:#ff4e00;">￥{{value.price*value.count}}</td>
+            <td align="center">26R</td>
+            <td align="center"><a @click="deleteCart(value.productId)">删除</a>&nbsp; &nbsp;<a @click="addLove(value.productId)">加入收藏</a></td>
+          </tr>
+          <tr height="70">
+          	<td colspan="6" style="font-family:'Microsoft YaHei'; border-bottom:0;">
+            	 <span class="fr">商品总价：<b style="font-size:22px; color:#ff4e00;">￥{{cart.total}}</b></span>
+            </td>
+          </tr>
+          <tr valign="top" height="150">
+          	<td colspan="6" align="right">
+          	    <!-- 继续购物、加入购物车  -->
+            	<a href="Index.html"><img src="images/buy1.gif" /></a>&nbsp; &nbsp; <a href="BuyCar_Two.html"><img src="images/buy2.gif" /></a>
+            </td>
+          </tr>
+        </table>
+        
+    </div>
+	<div v-else class="content mar_20">
+	    <h1>购物车空空如也</h1>
+	</div>
+	<!--End 第一步：查看购物车 End--> 
+    
+    
+    
+    <!--Begin Footer Begin -->
+    <!--End Footer End -->    
+    <div id="Index_Footer">
+    </div>
+    
+</div>
+
+</body>
+
+<script src="js/vue.js"></script>
+<script src="js/common.js"></script>
+<script>
+$(function(){
+
+	 ajaxRequest("api/member/user/getUserOfLogin","GET",result=>{
+	    	if(!result.flag){
+	    		window.location.href="Login.html"
+	        	alert(result.msg);
+	    	}
+	    })
+	    
+      $("#Index_Head").load("Index_Head.html");
+      $("#Index_Top").load("Index_Top.html");
+      $("#Index_Menu").load("Index_Menu.html");
+      $("#Index_Footer").load("Index_Footer.html");
+})
+    build_cart();
+    
+    var cartVue;
+    function build_cart(){
+    	ajaxRequest("api/member/cart/findCart","GET",function(result){
+    		 cartVue=new Vue({
+    			 el:"#cart",
+    			 data:{
+    				 cart:result.data
+    			 },
+    			 computed:{
+    				 cartSize(){
+    					 return Object.keys(this.cart.map).length
+    				 }
+    			 },
+    			 methods:{
+    				 isInteger(obj) {
+						 return obj%1 === 0
+					},
+					changeCount(oldVal,productId,event){
+						var $target=$(event.currentTarget);
+						var newVal=$target.val();
+						var flag=this.isInteger(newVal)//有缺陷，超过32位报false
+     					if(newVal==""||!flag||parseInt(newVal)<1){
+     						alert("只能输入比0大的整数")
+     						$target.val(oldVal)
+     					}else{
+     						ajaxRequestWithParams("api/member/cart/updateCart","post",{'id':productId,'count':newVal},result=>{
+    							if(!result.flag){
+    								alert("商品数量不足");
+    								$target.val(oldVal);
+    							}else{
+    								this.cart=result.data;
+    								$("#Index_Top").load("Index_Top.html");
+    							}
+    						});
+     					}
+					},
+    				  cartAddUpdate(event){	
+    					var _this=this;
+    					var inputEl=$(event.currentTarget).parent().find(".car_ipt");
+    					var c = parseInt(inputEl.val());
+    					var productId=inputEl.attr("productId");
+    						ajaxRequestWithParams("api/member/cart/updateCart","post",{'id':productId,'count':c+1},function(result){
+    							if(!result.flag){
+    								alert("商品数量不足");
+    							}else{
+    								_this.cart=result.data;
+    								$("#Index_Top").load("Index_Top.html");
+    							}
+    						});
+    					},
+    					cartJianUpdate(event){    
+    						var _this=this;
+    						var inputEl=$(event.currentTarget).parent().find(".car_ipt");
+    						var c = parseInt(inputEl.val());
+    						var productId=inputEl.attr("productId");
+    						if(c==1){    
+    							c=1;    
+    						}else{    
+    							ajaxRequestWithParams("api/member/cart/updateCart","post",{'id':productId,'count':c-1},function(result){
+									_this.cart=result.data;
+        							$("#Index_Top").load("Index_Top.html");
+        						});
+    						}
+    					},
+    					deleteCart(productId){
+    						var _this=this;
+    						ajaxRequestWithParams("api/member/cart/deleteCart","GET",{'id':productId},function(result){
+    							_this.cart=result.data;
+    							$("#Index_Top").load("Index_Top.html");
+    						});
+    					},
+    					addLove(productId){
+    						var _this=this;
+        					ajaxRequestWithParams("api/member/love/addLove","GET",{'id':productId},function(result){
+        						 alert(result.msg);
+        					});
+    					}
+    			 }
+    		 });
+    	});
+    }
+  
+</script>
+</html>

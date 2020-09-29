@@ -1,0 +1,188 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<link type="text/css" rel="stylesheet" href="css/style.css" />
+    
+    <script type="text/javascript" src="js/jquery-1.8.2.min.js"></script>
+    <script type="text/javascript" src="js/jquery-1.11.1.min_044d0927.js"></script>
+    <script type="text/javascript" src="js/shade.js"></script>
+    <script type="text/javascript" src="js/menu.js"></script>    
+            
+	<script type="text/javascript" src="js/lrscroll_1.js"></script>
+    
+    
+    
+<title>尤洪</title>
+</head>
+<body>  
+<!--Begin Header Begin-->
+<!--End Header End--> 
+ <div id="Index_Head">
+ </div>
+  <div id="Index_Top">
+ </div>
+
+<!--Begin Menu Begin-->
+<!--End Menu End--> 
+<div id="Index_Menu">
+</div>
+ 
+ 
+<div class="i_bg" >  
+ <div class="i_bg" id="product_list">
+    <div class="content mar_20">
+    	
+        <div class="l_list">
+            <div class="list_c">
+            	
+                <ul class="cate_list">
+                	<li v-for="product in pageInfo.list">
+                    	<div class="img"><a :href="`Product.html?id=${product.id}`"><img :src="`files/${product.fileName}`" width="210" height="185" /></a></div>
+                        <div class="price">
+                            <font>￥<span>{{product.price}}</span></font> &nbsp; 26R
+                        </div>
+                        <div class="name"><a href="#">{{product.name}}</a></div>
+                        <div class="carbg">
+                        	<a @click="addLove(product.id)"  class="ss">收藏</a>
+                            <a @click="addCart(product.id)" class="j_car">加入购物车</a>
+                        </div>
+                    </li>
+                </ul>
+                
+                <div class="pages">
+                	<a @click="page(pageNum-1)" class="p_pre">上一页</a>
+                	<a v-for="num in pageInfo.navigatepageNums" @click="page(num)" :class="{cur:pageNum==num}">{{num}}</a>
+                	<a @click="page(pageNum+1)" class="p_pre">下一页</a>
+                </div>
+                
+                
+                
+            </div>
+        </div>
+    </div>
+    
+    
+     <!--Begin 弹出层-收藏成功 Begin-->
+    <div id="fade" class="black_overlay"></div>
+    <div id="MyDiv" class="white_content">             
+        <div class="white_d">
+            <div class="notice_t">
+                <span class="fr" style="margin-top:10px; cursor:pointer;" onclick="CloseDiv('MyDiv','fade')"><img src="images/close.gif" /></span>
+            </div>
+            <div class="notice_c">
+           		
+                <table border="0" align="center" style="margin-top:;" cellspacing="0" cellpadding="0">
+                  <tr valign="top">
+                    <td width="40"><img src="images/suc.png" /></td>
+                    <td>
+                    	<span style="color:#3e3e3e; font-size:18px; font-weight:bold;">您已成功收藏该商品</span><br />
+                    	<a href="Member_Collect.html">查看我的关注 >></a>
+                    </td>
+                  </tr>
+                  <tr height="50" valign="bottom">
+                  	<td>&nbsp;</td>
+                    <td><a onclick="CloseDiv('MyDiv','fade')" class="b_sure">确定</a></td>
+                  </tr>
+                </table>
+                    
+            </div>
+        </div>
+    </div>    
+    <!--End 弹出层-收藏成功 End-->
+    
+     <!--Begin Footer Begin -->
+    <!--End Footer End -->    
+    <div id="Index_Footer">
+    </div> 
+</div>
+
+<script src="js/vue.js"></script>
+<script src="js/common.js"></script>
+<script>
+$(function () {
+
+    $("#Index_Head").load("Index_Head.html");
+    $("#Index_Top").load("Index_Top.html");
+    $("#Index_Menu").load("Index_Menu.html");
+    $("#Index_Footer").load("Index_Footer.html");
+})
+
+
+var productListVue=new Vue({
+	el:"#product_list",
+	data:{
+		queryUrl:"",
+		pageInfo:{},
+		pageSize:8,
+		pageNum:1,
+		categoryId:0,
+		search:""
+	},
+	created(){
+		this.categoryId=getUrlVars()['categoryId'];
+		if(this.categoryId==null){
+			this.getFindByCategory();
+		}else{
+			this.getSearch();
+		}
+		
+	},
+	methods:{
+		getFindByCategory(){
+			this.search=decodeURI(getUrlVars()['search']);//这里记得解密，因为search传过来变成了%号
+			var data={search:this.search,pageNum:this.pageNum,pageSize:this.pageSize};
+			ajaxRequestWithParams("api/member/product/search","GET",data,result=>{
+				this.pageInfo=result.data
+				this.pageNum=this.pageInfo.pageNum//-----记得
+			});
+		},
+		getSearch(){
+			this.queryUrl="findAllProductByCategoryId";
+			var data={categoryId:this.categoryId,pageNum:this.pageNum,pageSize:this.pageSize};
+			ajaxRequestWithParams("api/member/product/findAllProductByCategoryId","GET",data,result=>{
+				this.pageInfo=result.data
+				this.pageNum=this.pageInfo.pageNum//-----记得
+			});
+		},
+		page(pageNum){
+			this.pageNum=pageNum
+			if(this.queryUrl=='search'){
+				this.getSearch();
+			}else{
+				this.getFindByCategory();
+			}
+			
+		},
+		addLove(productId){
+			ajaxRequestWithParams("api/member/love/addLove","GET",{'id':productId},result=>{
+				 if(result.flag){
+					 ShowDiv('MyDiv','fade');
+				 }else{
+					 alert(result.msg);
+				 }
+			});
+			
+		},
+		addCart(productId){
+			var _this=this;//此处记得设置
+	    	ajaxRequestWithParams("api/member/cart/addCart","get",{'id':productId,'count':1},function(result){
+	    		if(result.flag){
+	    			var cart=result.data;
+	    			alert("加入购物车成功")
+	    			$("#Index_Top").load("Index_Top.html");
+	    		}else{
+	    			alert(result.msg);
+	    		}
+	    		
+	    	});
+		}
+	}
+});
+
+
+
+</script>
+</body>
+
+</html>

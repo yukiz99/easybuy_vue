@@ -1,0 +1,165 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<link type="text/css" rel="stylesheet" href="css/style.css" />
+  
+    <script type="text/javascript" src="js/jquery-1.11.1.min_044d0927.js"></script>
+	<script type="text/javascript" src="js/jquery.bxslider_e88acd1b.js"></script>
+    
+    <script type="text/javascript" src="js/jquery-1.8.2.min.js"></script>
+    <script type="text/javascript" src="js/menu.js"></script>    
+        
+	<script type="text/javascript" src="js/select.js"></script>
+    
+	<script type="text/javascript" src="js/lrscroll.js"></script>
+    
+    <script type="text/javascript" src="js/iban.js"></script>
+    <script type="text/javascript" src="js/fban.js"></script>
+    <script type="text/javascript" src="js/f_ban.js"></script>
+    <script type="text/javascript" src="js/mban.js"></script>
+    <script type="text/javascript" src="js/bban.js"></script>
+    <script type="text/javascript" src="js/hban.js"></script>
+    <script type="text/javascript" src="js/tban.js"></script>
+    
+	<script type="text/javascript" src="js/lrscroll_1.js"></script>
+    
+    
+<title>尤洪</title>
+</head>
+<body>  
+<!--Begin Header Begin-->
+<div class="soubg">
+	<div class="sou">
+        <span class="fr">
+        	<span class="fl">你好，请<a href="Login.html">登录</a>&nbsp; <a href="Regist.html" style="color:#ff4e00;">免费注册</a>&nbsp; </span>
+            <span class="fl">|&nbsp;关注我们：</span>
+            <span class="s_sh"><a href="#" class="sh1">新浪</a><a href="#" class="sh2">微信</a></span>
+            <span class="fr">|&nbsp;<a href="#">手机版&nbsp;<img src="images/s_tel.png" align="absmiddle" /></a></span>
+        </span>
+    </div>
+</div>
+<!--End Header End--> 
+<!--Begin Login Begin-->
+<div class="log_bg" id="regist">	
+    <div class="top">
+        <div class="logo"><a href="Index.html"><img src="images/logo.png" /></a></div>
+    </div>
+	<div class="regist">
+    	<div class="log_img"><img src="images/l_img.png" width="611" height="425" /></div>
+		<div class="reg_c">
+            <table border="0" style="width:420px; font-size:14px; margin-top:20px;" cellspacing="0" cellpadding="0">
+              <tr height="50" valign="top">
+              	<td width="95">&nbsp;</td>
+                <td>
+                	<span class="fl" style="font-size:24px;">注册</span>
+                    <span class="fr">已有商城账号，<a href="Login.html" style="color:#ff4e00;">我要登录</a></span>
+                </td>
+              </tr>
+              <tr height="50">
+                <td align="right"><font color="#ff4e00" >*</font>&nbsp;登录名 &nbsp;</td>
+                <td><input type="text" class="l_user" v-model="user.loginName"/></td>
+              </tr>
+              <tr height="50">
+                <td align="right"><font color="#ff4e00" >*</font>&nbsp;用户名 &nbsp;</td>
+                <td><input type="text" class="l_user" v-model="user.userName"/></td>
+              </tr>
+              <tr height="50">
+                <td align="right"><font color="#ff4e00">*</font>&nbsp;密码 &nbsp;</td>
+                <td><input type="password"  class="l_pwd" v-model="user.password"/></td>
+              </tr>
+              <tr height="50">
+                <td align="right"><font color="#ff4e00">*</font>&nbsp;确认密码 &nbsp;</td>
+                <td><input type="password" class="l_pwd" v-model="user.rePassword" /></td>
+              </tr>
+              <tr height="50">
+                <td align="right"><font color="#ff4e00">*</font>&nbsp;邮箱 &nbsp;</td>
+                <td><input type="text"  class="l_email" v-model="user.email"/></td>
+              </tr>
+              <tr height="50">
+                <td align="right"><font color="#ff4e00">*</font>&nbsp;手机 &nbsp;</td>
+                <td><input type="text"  class="l_tel" v-model="user.mobile"/></td>
+              </tr>
+              <tr>
+              	<td>&nbsp;</td>
+                <td style="font-size:12px; padding-top:20px;">
+                	<span style="font-family:'宋体';" class="fl">
+                    	<label class="r_rad"><input type="checkbox" /></label><label class="r_txt">我已阅读并接受《用户协议》</label>
+                    </span>
+                </td>
+              </tr>
+              <tr height="60">
+              	<td>&nbsp;</td>
+                <td><button class="log_btn"  @click="regist" type="button"/>立即注册<button></td>
+              </tr>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+<!--End Login End--> 
+<!--Begin Footer Begin-->
+<div class="btmbg">
+    <div class="btm">
+        备案/许可证编号：蜀ICP备12009302号-1-www.dingguagua.com   Copyright © 2015-2018 尤洪商城网 All Rights Reserved. 复制必究 , Technical Support: Dgg Group <br />
+        <img src="images/b_1.gif" width="98" height="33" /><img src="images/b_2.gif" width="98" height="33" /><img src="images/b_3.gif" width="98" height="33" /><img src="images/b_4.gif" width="98" height="33" /><img src="images/b_5.gif" width="98" height="33" /><img src="images/b_6.gif" width="98" height="33" />
+    </div>    	
+</div>
+<!--End Footer End -->    
+
+<script src="js/vue.js"></script>
+<script src="js/common.js"></script>
+<script>
+    
+
+    
+    var registForm=new Vue({
+    	el:"#regist",
+    	data:{
+    		user:{}
+    	},
+    	methods:{
+    	     regist(){
+    	    	var userName=this.user.userName;
+    	    	var loginName=this.user.loginName;
+    	     	var password=this.user.password;
+    	     	var rePassword=this.user.rePassword;
+    	     	var email=this.user.email;
+    	     	var mobile=this.user.mobile
+    	     	if(this.isEmpty(userName)||this.isEmpty(loginName)||this.isEmpty(password)||this.isEmpty(rePassword)||this.isEmpty(email)||this.isEmpty(mobile)){
+    	     		alert("请填写完整")
+    	     		return
+    	     	}else{
+    	     		if(password!=rePassword){
+        	     		alert("两次密码输入不同");
+        	     		return;
+        	     	}
+    	     	}
+    	     	ajaxRequestWithParams("api/member/user/register","POST",this.user,result=>{
+    	     		if(result.flag){
+    	     			alert("注册成功");
+    	     			window.location.href="Login.html";
+    	     		}else{
+    	     			alert(result.msg);
+    	     		}
+    	     	})
+    	     },
+    	     isEmpty(val){
+    	    	 if(val==null||val.trim()==""){
+    	    		 return true
+    	    	 }
+    	    	 return false
+    	     }
+    	     
+    	}
+    	
+    })
+    
+    
+
+</script>
+
+</body>
+
+</html>

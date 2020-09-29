@@ -1,0 +1,218 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<link type="text/css" rel="stylesheet" href="css/style.css" />
+
+        
+    <script type="text/javascript" src="js/jquery-1.8.2.min.js"></script>
+    <script type="text/javascript" src="js/jquery-1.11.1.min_044d0927.js"></script>
+    <script type="text/javascript" src="js/menu.js"></script>    
+        
+	<script type="text/javascript" src="js/select.js"></script>
+        
+    
+<title>尤洪</title>
+</head>
+<body>  
+<!--Begin Header Begin-->
+<!--End Header End--> 
+<div id="Index_Head">
+ </div>
+ 
+  <div id="Index_Top">
+ </div>
+
+
+
+
+<div class="i_bg bg_color" id="category_list">
+    <!--Begin 用户中心 Begin -->
+	<div class="m_content">
+   		<div id="Admin_Left">
+		 </div>
+   		
+		<div class="m_right">
+            <div class="mem_tit">分类管理</div>
+             <a href="Admin_CategoryAdd.html" class="add_b" align="right" style=" margin-bottom:20px;margin-right:50px">添加分类</a>
+            <table border="0" class="order_tab" style="width:930px;" cellspacing="0" cellpadding="0">
+                <tr>
+                    <td align="center" width="200">分类名称</td>
+                    <td align="center" width="200">分类级别</td>
+                    <td align="center" width="100">父级分类</td>
+                    <td align="center" width="300">操作</td>
+                </tr>
+                <tr   v-for="category in pageInfo.list">
+                    <td align="center">{{category.name}}</td>
+                    <td align="center">
+                      <span v-if="category.type==1">第一级别</span>
+                      <span v-if="category.type==2">第二级别</span>
+                      <span v-if="category.type==3">第三级别</span>
+                     </td>
+                    <td align="center">
+                    	<span v-if="category.parentId==0">无</span>
+                    	<span v-else>{{showParentName(category.parentId)}}</span>
+                    </td>
+                    <td align="center"><a href="#" @click="deleteCategory(category.id)">删除</a></td>
+                </tr>
+            </table>
+             <div class="pages">
+                	<a @click="page(pageNum-1)" class="p_pre">上一页</a>
+                	<a v-for="num in pageInfo.navigatepageNums" @click="page(num)" :class="{cur:pageNum==num}">{{num}}</a>
+                	<a @click="page(pageNum+1)" class="p_pre">下一页</a>
+                </div>
+          <!-- 
+           <table border="0" class="order_tab" style="width:930px;" cellspacing="0" cellpadding="0">
+                <tr>
+                    <td align="center" width="200">分类名称</td>
+                    <td align="center" width="200">分类级别</td>
+                    <td align="center" width="100">父级分类</td>
+                    <td align="center" width="300">操作</td>
+                </tr>
+                <tr   v-for="category1 in categoryList">
+                    <td align="center">{{category1.name}}</td>
+                    <td align="center">第一级别</td>
+                    <td align="center">无</td>
+                    <td align="center"><a href="#" @click="deleteCategory(category1.id)">删除</a></td>
+                </tr>
+                 <tr   v-for="category2 in category2List">
+	                  <td align="center">{{category2.name}}</td>
+	                  <td align="center">第二级别</td>
+	                  <td align="center">{{category2.parentId}}</td>
+	                  <td align="center"><a href="#" @click="deleteCategory(category2.id)">删除</a></td>
+                 </tr>
+                  <tr v-for="category3 in category3List">
+                    <td align="center">{{category3.name}}</td>
+                    <td align="center">第三级别</td>
+                    <td align="center">{{category3.parentId}}</td>
+                    <td align="center"><a href="#" @click="deleteCategory(category3.id)">删除</a></td>
+                  </tr>
+            </table>
+           -->
+ 			
+     </div>
+    </div>
+	<!--End 用户中心 End--> 
+    <!--Begin Footer Begin -->
+    <!--End Footer End -->   
+     <div id="Index_Footer">
+     </div> 
+  
+</div>
+
+
+<script src="js/vue.js"></script>
+<script src="js/common.js"></script>
+<script>
+ 
+$(function () {
+	 ajaxRequest("api/member/user/getUserOfLogin","GET",result=>{
+	    	if(!result.flag){
+	    		window.location.href="Login.html"
+	        	alert(result.msg);
+	    	}else{
+	    		if(result.data.type==0){
+	    			window.location.href="Index.html"
+	    			alert("没有权限")
+	    		}
+	    	}
+	    	
+	  })
+	    
+   $("#Index_Head").load("Index_Head.html");
+   $("#Index_Top").load("Index_Top.html");
+   $('#Admin_Left').load('Admin_Left.html');
+   $("#Index_Footer").load("Index_Footer.html");
+})
+
+/**
+    	var category_list=new Vue({
+			el:"#category_list",
+			data:{
+				categoryList:[],
+				category2List: [],
+				category3List: []
+			},
+			created(){
+				this.showCategoryList();
+			},
+			methods:{
+				showCategoryList(){
+					_this=this;//一直push报错的原因：each中this非指向vue实例
+					ajaxRequest("api/member/category/findAllCategory","GET",result=>{
+				    	_this.categoryList=result.data;
+				    	$.each(_this.categoryList,function(i,category1){
+	    					$.each(category1.children,function(i,category2){
+	    						_this.category2List.push(category2);
+	    						$.each(category2.children,function(i,category3){
+	    							_this.category3List.push(category3);
+	    						})
+	    					});
+	    				});
+			    	});
+    				
+				},
+				deleteCategory(id){
+					ajaxRequestWithParams("api/admin/category/deleteCategory","GET",{'id':id},function(result){
+						alert(result.msg);
+						if(result.flag){
+							Build_Category_List();
+						}
+					});
+				}
+				
+			}
+		});
+**/
+var category_list=new Vue({
+	el:"#category_list",
+	data:{
+		pageInfo:{},
+		parentName:{},
+		pageNum:1,
+		pageSize:20
+	},
+	created(){
+		this.page(1);
+	},
+	methods:{
+		page(pageNum){
+			var data={'pageNum':pageNum,'pageSize':this.pageSize};
+			ajaxRequestWithParams("api/member/category/findAllCategoryNoType","GET",data,result=>{
+		    	this.pageInfo=result.data;
+		    	this.pageNum=this.pageInfo.pageNum
+		    	
+		    	
+	    	});
+		},
+		showParentName(id){
+			var name;
+			$.ajax({
+				url:"api/member/category/findCategoryById",
+				type:"GET",
+				headers:{"token":localStorage.token},
+				data:{'id':id},
+				async:false,
+				success:function(result){
+					name=result.data.name
+				}
+			});
+			return name;
+		},
+		deleteCategory(id){
+			ajaxRequestWithParams("api/admin/category/deleteCategory","GET",{'id':id},result=>{
+				alert(result.msg);
+				if(result.flag){
+					this.page(this.pageNum)
+				}
+			});
+		}
+		
+	}
+});
+    
+
+</script>
+
+</body>
+</html>

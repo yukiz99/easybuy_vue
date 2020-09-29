@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.zhu.easybuy.mapper.UserMapper">
+	
+	<!-- 
+	private Integer id;//主键
+
+	private String loginName;//登录名
+	private String userName;//用户名
+	private String password;//密码
+	private Integer sex;//性别(1:男 0：女)
+	private String identityCode;//身份证号
+	private String email;//邮箱
+	private String mobile;//手机
+	private Integer type;//类型（1：后台 0:前台）
+	 -->
+	 <select id="findAll" resultType="User">
+	    select*from easybuy_user 
+	 </select>
+	 
+	<select id="findByLoginName" resultType="User">
+		select * from easybuy_user where loginName=#{loginName}
+	</select>
+	<select id="findUserById" resultType="User">
+	    select*from easybuy_user where id=#{id}
+	</select>
+	
+	<insert id="add">
+	    insert into easybuy_user 
+	    value(0,#{loginName},#{userName},#{password},#{sex},#{identityCode},#{email},#{mobile},#{type})
+	</insert>
+	
+	<update id="update">
+	    update easybuy_user set  userName=#{userName},sex=#{sex},identityCode=#{identityCode},email=#{email},mobile=#{mobile}, type=#{type} where id=#{id}
+	</update>  
+	
+	<delete id="delete">
+	    delete from easybuy_user where id=#{id}
+	</delete>
+</mapper>

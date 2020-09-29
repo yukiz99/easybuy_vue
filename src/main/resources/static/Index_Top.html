@@ -1,0 +1,85 @@
+
+<div class="top"  id="top_div">
+    <div class="logo"><a href="Index.html"><img src="images/logo.png"></a></div>
+    <div class="search">
+        <form>
+            <input v-model="search" class="s_ipt">
+           <input @click="searchProduct" value="搜索" class="s_btn"/>
+        </form>
+    </div>
+    
+    <div class="i_car">
+        <div class="car_t">购物车 [ <span>{{size}}</span> ]</div>
+        <div class="car_bg">
+            <!--Begin 购物车未登录 Begin-->
+            <!-- 
+               <c:if test="${sessionScope.loginUser==null}">
+                <div class="un_login">还未登录！<a href="${ctx}/Login?action=toLogin" style="color:#ff4e00;">马上登录</a> 查看购物车！</div>
+            </c:if>
+             -->
+            <!--End 购物车未登录 End-->
+            <!--Begin 购物车已登录 Begin-->
+            <div v-if="size==0"> 您尚未购买任何物品，是否进入<a href="Index.html">商品页</a>进行购买！</div>
+            <div v-else>
+	            <ul class="cars" >
+	                
+	                    <li  v-for="(value,key,index) in cart.map">
+	                        <div class="img">
+	                            <a href="javascript:void(0)">
+	                                <img v-bind:src="`files/${value.fileName}`" width="58" height="58">
+	                            </a>
+	                        </div>
+	                        <div class="name">
+	                            <a href="javascript:void(0)">{{value.productName}}</a>
+	                        </div>
+	                        <div class="price">
+	                            <font color="#ff4e00">￥ {{value.price}}</font>X{{value.count}}
+	                        </div>
+	                    </li>
+	            </ul>
+	        
+	            <div class="price_sum">共计&nbsp; <font color="#ff4e00">￥</font><span>{{cart.total}}</span></div>
+	            <div class="price_a"><a href="BuyCar.html">去购物车结算</a></div>
+             </div>
+            <!--End 购物车已登录 End-->
+        </div>
+    </div>
+</div>
+
+<script src="js/vue.js"></script>
+<script src="js/common.js"></script>
+
+<script>
+ 
+
+var topDivVue=new Vue({
+	 el:"#top_div",
+	 data:{
+		 cart:{},
+		 size:0,
+		 pageInfo:{},
+		 search:""
+	 },
+	 created(){
+		this.showCart();
+	 },
+	 methods:{
+		 showCart(){
+			 ajaxRequest("api/member/cart/findCart","GET",result=>{
+					this.cart=result.data
+					 if(this.cart!=null&&this.cart.map!=null){
+						 this.size=Object.keys(this.cart.map).length;//获取cart中map的大小
+					 }
+			 });
+		 },
+		 searchProduct(){
+			 window.location.href="ProductList.html?search="+this.search;
+		 }
+		 
+	 }
+});
+
+
+	
+
+</script>

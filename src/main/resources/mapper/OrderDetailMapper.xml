@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.zhu.easybuy.mapper.OrderDetailMapper">
+	
+	<!-- 
+	private Integer id;//主键
+	
+	private Integer orderId;//订单主键
+	private Integer productId;//商品主键
+	private Integer quantity;//数量
+	private Float cost;//消费
+	
+	private Product product;
+	
+	 -->
+	 <select id="findAllByOrderId" resultType="OrderDetail">
+	   select*from easybuy_order_detail where orderId=#{orderId}
+	 </select>
+	<insert id="add">
+		insert into easybuy_order_detail value(0,#{orderId},#{productId},#{quantity},#{cost})
+	</insert>
+	<delete id="deleteByOrder">
+	    delete from easybuy_order_detail where orderId=#{orderId}
+	</delete>
+</mapper>

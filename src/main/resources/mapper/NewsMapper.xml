@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.zhu.easybuy.mapper.NewsMapper">
+	
+	<!-- 
+		private Integer id;//主键
+
+		private String title;//标题
+		private String content;//内容
+		private String createTime;//创建时间
+	 -->
+	<select id="allNews" resultType="News">
+	    select*from easybuy_news order by createTime DESC  
+	</select>
+	<select id="findById" resultType="News">
+	    select*from easybuy_news where id=#{id}
+	</select>
+</mapper>

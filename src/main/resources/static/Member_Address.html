@@ -1,0 +1,170 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<link type="text/css" rel="stylesheet" href="css/style.css" />
+        
+    <script type="text/javascript" src="js/jquery-1.8.2.min.js"></script>
+    <script type="text/javascript" src="js/jquery-1.11.1.min_044d0927.js"></script>  
+        
+    
+<title>尤洪</title>
+</head>
+<body>  
+<!--Begin Header Begin-->
+<!--End Header End--> 
+ <div id="Index_Head">
+ </div>
+ 
+  <div id="Index_Top">
+ </div>
+ 
+
+<div class="i_bg bg_color">
+    <!--Begin 用户中心 Begin -->
+	<div class="m_content">
+   		<div id="Member_Left">
+		 </div>
+		<div class="m_right" id="address">
+            <p></p>
+            <div class="mem_tit">收货地址</div>
+            <!-- address循环、通过isDefault来判断背景颜色 -->
+			<div v-for="address in addressList"  class="address" :style="address.isDefault?'background-color:#f0f0f0':'background-color:#ffffff'" >
+            	<div class="a_close"><a @click="deleteAddress(address.id)"><img src="images/a_close.png" /></a></div>
+            	<table border="0" class="add_t" align="center" style="width:98%; margin:10px auto;" cellspacing="0" cellpadding="0">
+                  <tr>
+                    <td colspan="2" style="font-size:14px; color:#ff4e00;">{{address.remark}}</td>
+                  </tr>
+                  <tr>
+                    <td align="right" width="30%">详细地址：</td>
+                    <td>{{address.address}}</td>
+                  </tr>
+                </table>
+				
+                <p align="right">
+                	<a v-if="!address.isDefault" @click="setDefault(address.id)" style="color:#ff4e00;">设为默认</a>&nbsp; &nbsp; &nbsp; &nbsp; 
+                	<a @click="getEidtAddress(address.id)" style="color:#ff4e00;">编辑</a>&nbsp; &nbsp; &nbsp; &nbsp; 
+                </p>
+
+            </div>
+
+            <table border="0" class="add_tab" style="width:930px;"  cellspacing="0" cellpadding="0">
+              <tr>
+                <td>备注</td>
+                <td style="font-family:'宋体';"><input type="text" v-model="inputAddress.remark"  class="add_ipt"></td>
+                <td align="right">详细地址</td>
+                <td style="font-family:'宋体';"><input type="text" v-model="inputAddress.address"  class="add_ipt" /></td>
+              </tr>
+             
+            </table>
+           	<p align="right">
+           	   <a @click="addAddress"><img src="images/add_ad.gif" /></a>&nbsp; &nbsp; <a @click="editAddress" class="add_b">确认修改</a>
+            </p> 
+           
+            
+        </div>
+    </div>
+	<!--End 用户中心 End--> 
+    <!--Begin Footer Begin -->
+    <!--End Footer End -->    
+     <div id="Index_Footer">
+     </div>
+</div>
+
+
+<script src="js/vue.js"></script>
+<script src="js/common.js"></script>
+<script>
+
+$(function () {
+	  
+    ajaxRequest("api/member/user/getUserOfLogin","GET",result=>{
+    	if(!result.flag){
+    		window.location.href="Login.html"
+        	alert(result.msg);
+    		return
+    	}
+    	
+       
+        
+        if(result.data.type==0){
+	    	$('#Member_Left').load('Member_Left.html');
+	    }else{
+	    	 $('#Member_Left').load('Admin_Left.html'); 
+	    }
+    })
+    $("#Index_Head").load("Index_Head.html");
+    $("#Index_Top").load("Index_Top.html");
+    $("#Index_Footer").load("Index_Footer.html");
+
+})
+
+
+    build_address();
+    var addressVue;
+    function build_address(){
+    	addressVue=new Vue({
+    		el:"#address",
+    		data:{
+    			addressList:[],
+    			inputAddress:{}
+    		},
+    		created(){
+    			this.showAddress();
+    		},
+    		methods:{
+    			showAddress(){
+    				var _this=this;
+    				ajaxRequest("api/member/address/findAllByUser","GET",function(result){
+    					_this.addressList=result.data
+    				});
+    			},
+    			setDefault(id){
+    				var _this=this;
+    				ajaxRequestWithParams("api/member/address/setDefault","GET",{"id":id},function(result){
+    					_this.showAddress();
+    				});
+    			},
+    			deleteAddress(id){
+    				var _this=this;
+    				ajaxRequestWithParams("api/member/address/deleteAddress","GET",{'id':id},function(result){
+    					alert("删除成功");
+    					_this.showAddress();
+    				});
+    			},
+    			getEidtAddress(id){
+    				var _this=this;
+    				ajaxRequestWithParams("api/member/address/findAddressById","GET",{'id':id},function(result){
+    					_this.inputAddress=result.data
+    				});
+    			},
+    			editAddress(){
+    				var _this=this;
+    			    if(_this.inputAddress.address==null||_this.inputAddress.address==""){
+    			    	alert("地址不可为空")
+    			    	return
+    			    }
+    			    delete _this.inputAddress['createTime'];//这里改一下，不然传到controller报错
+    				ajaxRequestWithParams("api/member/address/updateAddress","POST",_this.inputAddress,function(result){
+    					_this.showAddress();
+       					_this.inputAddress={}
+    				});
+    			},
+    			addAddress(){
+    				var _this=this;
+    				ajaxRequestWithParams("api/member/address/addAddress","POST",{'address':_this.inputAddress.address,"remark":_this.inputAddress.remark},function(result){
+    					alert(result.msg)
+    					_this.showAddress();
+    					_this.inputAddress={}
+    				});
+    			}
+    		}
+    	});
+    }
+</script>
+
+</body>
+
+</html>
+
+

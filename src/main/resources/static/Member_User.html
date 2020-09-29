@@ -1,0 +1,196 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<link type="text/css" rel="stylesheet" href="css/style.css" />
+
+        
+    <script type="text/javascript" src="js/jquery-1.8.2.min.js"></script>
+    <script type="text/javascript" src="js/jquery-1.11.1.min_044d0927.js"></script>
+    <script type="text/javascript" src="js/shade.js"></script>
+        
+    
+<title>尤洪</title>
+</head>
+<body>  
+<!--Begin Header Begin-->
+<!--End Header End--> 
+<div id="Index_Head">
+ </div>
+ 
+  <div id="Index_Top">
+ </div>
+
+
+
+
+<div class="i_bg bg_color"   id="user">
+    <!--Begin 用户中心 Begin -->
+	<div class="m_content">
+	    <!-- 这里load左侧管理功能页面 -->
+   		<div id="Member_Left"></div>
+   		
+	   <div class="m_right">
+		    <div class="mem_tit">账号信息</div>
+            <table  style="border:1px solid #f0f0f0;width:870px; margin-top:20px;" cellspacing="10" cellpadding="3">
+               <tr>
+                <td>登录名：<span>{{user.loginName}}</span></td>
+                <td>用户名：<span>{{user.userName}}</span></td>
+              </tr>
+               <tr>
+                <td>性别：
+	                <span>
+		                <span v-if="user.sex==1">男</span>
+		                <span v-if="user.sex==0">女</span>
+	                </span>
+                </td>
+                <td>身份证号：<span v-if="user.identityCode!=null">{{user.identityCode}}</span></td>
+              </tr>
+              <tr>
+                <td>电话：<span>{{user.mobile}}</span></td>
+                <td>邮箱：<span>{{user.email}}</span></td>
+              </tr>
+              <tr>
+                 <td colspan="2" align="right">
+                    <a @click="showEditUser" class="add_b">修改</a>
+                 </td>
+              </tr>
+            </table>
+            
+        </div>
+      </div>
+	<!--End 用户中心 End--> 
+	
+	
+	  <!--Begin 弹出层-修改用户 Begin-->
+    <div id="fade" class="black_overlay"></div>
+    <div id="UserDiv" class="white_content">             
+         <div class="white_d">
+            <div class="notice_t">
+                <span class="fr" style="margin-top:10px; cursor:pointer;" onclick="CloseDiv('UserDiv','fade')"><img src="images/close.gif" /></span>
+            </div>
+            <div class="notice_c">
+           		
+                <table border="0" align="center" cellspacing="0" cellpadding="0">
+                  <tr>
+                    <td colspan="2">
+                    	<span style="color:#3e3e3e; font-size:18px; font-weight:bold;">修改信息</span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><font color="#ff4e00">*</font>&nbsp;用户名：</td><td><input v-model="editUser.userName"/></td>
+                  </tr>
+                  <tr>
+                    <td>性别：</td>
+                    <td>
+                        <input type="radio" name="sex" v-model="editUser.sex" value="1"/> 男
+                        <input type="radio" name="sex" v-model="editUser.sex" value="0"/> 女
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>身份证：</td><td><input v-model="editUser.identityCode"/></td>
+                  </tr>
+                  <tr>
+                    <td><font color="#ff4e00">*</font>&nbsp;手机：</td><td><input v-model="editUser.mobile"/></td>
+                  </tr>
+                  
+                  <tr>
+                    <td><font color="#ff4e00">*</font>&nbsp;邮箱：</td><td><input v-model="editUser.email"/></td>
+                  </tr>
+                  
+                  <tr height="50" valign="bottom">
+                  	<td>&nbsp;</td>
+                    <td><a @click="updateUser" class="b_sure">确认修改</a></td>
+                  </tr>
+                </table>
+                    
+            </div>
+        </div>
+    </div>    
+    <!--End 弹出层-修改用户  End-->
+    
+    <!--Begin Footer Begin -->
+    <!--End Footer End -->   
+     <div id="Index_Footer">
+	     </div> 
+</div>
+
+<script src="js/vue.js"></script>
+<script src="js/common.js"></script>
+<script>
+
+$(function () {
+  
+    ajaxRequest("api/member/user/getUserOfLogin","GET",result=>{
+    	if(!result.flag){
+    		window.location.href="Login.html"
+        	alert(result.msg);
+    	}
+    	
+        if(result.data.type==0){
+        	 $('#Member_Left').load('Member_Left.html');
+        }else{
+        	$('#Member_Left').load('Admin_Left.html');
+        }        
+    })
+    $("#Index_Head").load("Index_Head.html");
+    $("#Index_Top").load("Index_Top.html");
+    $("#Index_Footer").load("Index_Footer.html");
+
+})
+
+
+     build_user();  
+     function build_user(){
+    	   var user=new Vue({
+					el:"#user",
+					data:{
+						user:{},
+						editUser:{}
+					},
+					created(){
+						this.showUser();
+					},
+					methods:{
+						showUser(){
+							ajaxRequest("api/member/user/getUserOfLogin","GET",result=>{
+								this.user=result.data;
+								this.editUser=result.data;
+							});
+						},
+						showEditUser(){
+							ShowDiv('UserDiv','fade');
+						},
+						updateUser(){
+							if(this.valid(this.editUser)){
+								//更新用户时记得将token中用户也更新掉
+								ajaxRequestWithParams("api/member/user/updateUser","POST",this.editUser,result=>{
+									alert(result.msg);
+									CloseDiv('UserDiv','fade');
+									this.showUser();
+									$("#Index_Head").load("Index_Head.html");
+								});
+							}
+						},
+						 isEmpty(val){
+			    	    	 if(val==null||val.trim()==""){
+			    	    		 return true
+			    	    	 }
+			    	    	 return false
+			    	     },
+			    	     valid(user){
+			    	    		if(this.isEmpty(user.userName)||this.isEmpty(user.email)||this.isEmpty(user.mobile)){
+			        	     		alert("请填写完整")
+			        	     		return false
+			        	     	}
+			    	    		return true
+			    	     }
+					}
+					
+    		 
+    	       });
+     }
+</script>
+
+</body>
+</html>

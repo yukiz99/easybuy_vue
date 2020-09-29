@@ -1,0 +1,298 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<link type="text/css" rel="stylesheet" href="css/style.css" />
+  
+    <script type="text/javascript" src="js/jquery-1.11.1.min_044d0927.js"></script>
+	<script type="text/javascript" src="js/jquery.bxslider_e88acd1b.js"></script>
+    
+    <script type="text/javascript" src="js/jquery-1.8.2.min.js"></script>
+        
+	<script type="text/javascript" src="js/select.js"></script>
+    
+	<script type="text/javascript" src="js/lrscroll.js"></script>
+    
+    <script type="text/javascript" src="js/iban.js"></script>
+    <script type="text/javascript" src="js/fban.js"></script>
+    <script type="text/javascript" src="js/f_ban.js"></script>
+    <script type="text/javascript" src="js/mban.js"></script>
+    <script type="text/javascript" src="js/bban.js"></script>
+    <script type="text/javascript" src="js/hban.js"></script>
+    <script type="text/javascript" src="js/tban.js"></script>
+    
+	<script type="text/javascript" src="js/lrscroll_1.js"></script>
+    
+    
+<title>易买网</title>
+</head>
+<body>  
+<!--Begin Header Begin-->
+<!--End Header End--> 
+ <div id="Index_Head">
+      <script>
+      $("#Index_Head").load("Index_Head.html");
+      </script>
+ </div>
+ 
+  <div id="Index_Top">
+      <script>
+      $("#Index_Top").load("Index_Top.html");
+      </script>
+ </div>
+ 
+ 
+ 
+<!--Begin Menu Begin-->
+<div class="menu_bg">
+	<div class="menu" id="menu">
+    	<!--Begin 商品分类详情 Begin-->    
+    	<div class="nav">
+        	<div class="nav_t">全部商品分类</div>
+            <div class="leftNav">
+                <ul>      
+                    <li v-for="category1 in categoryList">
+                    	<div class="fj">
+                        	<!-- <span class="n_img"><span></span><img src="images/nav1.png" /></span>-->
+                            <span class="fl"><a :href="`ProductList.html?categoryId=${category1.id}`">{{category1.name}}</a></span>
+                        </div>
+                        <div class="zj">
+                            <div class="zj_l">
+                                <div class="zj_l_c" v-for="category2 in category1.children">
+                                    <h2><a :href="`ProductList.html?categoryId=${category2.id}`">{{category2.name}}</a></h2>
+                                        <div v-for="category3 in category2.children">
+                                           <a :href="`ProductList.html?categoryId=${category3.id}`">{{category3.name}}</a>|
+                                        </div>
+                                </div>
+                            </div>
+                            <div class="zj_r">
+                                <a href="#"><img src="images/n_img1.jpg" width="236" height="200" /></a>
+                                <a href="#"><img src="images/n_img2.jpg" width="236" height="200" /></a>
+                            </div>
+                        </div>
+                        
+                    </li>  	
+                </ul>            
+            </div>
+        </div>  
+        <!--End 商品分类详情  商品专题End-->                                                     
+    	<ul class="menu_r">  
+    	       <li><a href="Index.html">首页</a></li>
+    	       <div v-for="category1 in categoryList">                                                                                                                                         
+        	      <li><a :href="`ProductList.html?categoryId=${category1.id}`">{{category1.name}}</a></li>
+        	   </div> 
+        </ul>
+        <div class="m_ad">中秋送好礼！</div>
+    </div>
+</div>
+
+
+<!--End Menu End--> 
+<div class="i_bg bg_color">
+	<div class="i_ban_bg">
+		<!--Begin Banner Begin-->
+    	<div class="banner">    	
+            <div class="top_slide_wrap">
+                <ul class="slide_box bxslider">
+                    <li><img src="images/ban1.jpg" width="740" height="401" /></li>
+                    <li><img src="images/ban1.jpg" width="740" height="401" /></li> 
+                    <li><img src="images/ban1.jpg" width="740" height="401" /></li> 
+                </ul>	
+                <div class="op_btns clearfix">
+                    <a href="#" class="op_btn op_prev"><span></span></a>
+                    <a href="#" class="op_btn op_next"><span></span></a>
+                </div>        
+            </div>
+        </div>
+        <script>
+        (function(){
+            $(".bxslider").bxSlider({
+                auto:true,
+                prevSelector:jq(".top_slide_wrap .op_prev")[0],nextSelector:jq(".top_slide_wrap .op_next")[0]
+            });
+        })();
+        </script>
+        <!--End Banner End-->
+        
+        
+        
+        
+        <!-- ---资讯 ------->
+        <div class="inews">
+        	<div class="news_t">
+            	<span class="fr"><a href="Member_NewsList.html">更多 ></a></span>新闻资讯
+            </div>
+            <!-- 资讯 -->
+            <ul id="news_ul">
+            	<li v-for="news in newsPageInfo.list"><span>[ 公告 ]</span><a :href="`Member_News.html?id=${news.id}`">{{news.title}}</a></li>
+            </ul>
+            <div class="charge_t">
+            	话费充值<div class="ch_t_icon"></div>
+            </div>
+            <form>
+            <table border="0" style="width:205px; margin-top:10px;" cellspacing="0" cellpadding="0">
+              <tr height="35">
+                <td width="33">号码</td>
+                <td><input type="text" value="" class="c_ipt" /></td>
+              </tr>
+              <tr height="35">
+                <td>面值</td>
+                <td>
+                	<select class="jj" name="city">
+                      <option value="0" selected="selected">100元</option>
+                      <option value="1">50元</option>
+                      <option value="2">30元</option>
+                      <option value="3">20元</option>
+                      <option value="4">10元</option>
+                    </select>
+                    <span style="color:#ff4e00; font-size:14px;">￥99.5</span>
+                </td>
+              </tr>
+              <tr height="35">
+                <td colspan="2"><input type="submit" value="立即充值" class="c_btn" /></td>
+              </tr>
+            </table>
+            </form>
+        </div>
+    </div>
+    
+    
+    
+
+    <div class="content mar_20">
+    	<img src="images/mban_1.jpg" width="1200" height="110" />
+    </div>
+    
+    
+    
+<div id="product_content">
+	   <!--Begin 进口 生鲜 Begin-->
+    <div v-for="category1,index in categoryList">
+	    <div class="i_t mar_10">
+	    	<span class="floor_num">{{index+1}}F</span>
+	    	<span class="fl">{{category1.name}}</span>                
+	    </div>
+    
+    
+	    <div class="content">
+	    	<div class="fresh_left">
+	        	<div class="fre_ban">
+	            	<div id="imgPlay1">
+	                    <ul class="imgs" id="actor1">
+	                        <li><a href="#"><img src="images/fre_r.jpg" width="211" height="286" /></a></li>
+	                        <li><a href="#"><img src="images/fre_r.jpg" width="211" height="286" /></a></li>
+	                    </ul>
+	                    <div class="prevf">上一张</div>
+	                    <div class="nextf">下一张</div> 
+	                </div>   
+	            </div>
+	            <div class="fresh_txt">
+	            	<div class="fresh_txt_c">
+	                	<a :href="`ProductList.html?categoryId=${category2.id}`" v-for="category2 in category1.children">{{category2.name}}</a>
+	                </div>
+	            </div>
+	        </div>
+	        <div class="fresh_mid">
+	        	<ul>
+	            	<li v-for="product in category1.list">
+	                	<div class="name"><a v-bind:href="`product.html?id=${product.id}`">{{product.name}}</a></div>
+	                    <div class="price">
+	                    	<font>￥<span>{{product.price}}</span></font> &nbsp; 28R
+	                    </div>
+	                    <div class="img"><a v-bind:href="`product.html?id=${product.id}`"><img v-bind:src="`files/${product.fileName}`" width="185" height="155" /></a></div>
+	                </li>
+	            </ul>
+	        </div>
+	        <div class="fresh_right">
+	        	<ul>
+	            	<li><a href="#"><img src="images/fre_b1.jpg" width="260" height="220" /></a></li>
+	                <li><a href="#"><img src="images/fre_b2.jpg" width="260" height="220" /></a></li>
+	            </ul>
+	        </div>
+	    </div>    
+    </div>
+	<!--End 进口 生鲜 End-->
+</div>
+    
+   
+    
+    
+    
+    <!--Begin Footer Begin -->
+    <!--End Footer End -->    
+      <div id="Index_Footer">
+	      <script>
+	      $("#Index_Footer").load("Index_Footer.html");
+	      </script>
+     </div>
+</div>
+
+
+<script src="js/vue.js"></script>
+<script src="js/common.js"></script>
+<script>
+   
+
+	   build_menu();
+	   build_product_content();  
+   
+  //渲染news
+	 
+   var news_ul=new Vue({
+		el:"#news_ul",
+		data:{
+			newsPageInfo:{},
+			pageNum:1,
+			pageSize:5
+		},
+		created(){
+			var data={'pageNum':this.pageNum,'pageSize':this.pageSize};
+			 ajaxRequestWithParams("api/member/news/allNews","GET",data,result=>{
+				 this.newsPageInfo=result.data;
+			  });
+		}
+	})
+	
+
+
+   
+//渲染左侧分类与专题
+  function build_menu(){
+	  ajaxRequest("api/member/category/findAllCategory","GET",function(result){
+		   var menu=new Vue({
+				el:"#menu",
+				data:{
+					categoryList:result.data
+				},
+				mounted(){
+					 $(".leftNav ul li").hover(
+					        	function(){
+									$(this).find(".fj").addClass("nuw");
+									$(this).find(".zj").show();
+								},
+								function(){
+									$(this).find(".fj").removeClass("nuw");
+									$(this).find(".zj").hide();
+								}
+				        	)
+				}
+			})
+	  });	
+ }
+ 
+ //渲染商品
+  function build_product_content(){
+	 ajaxRequestWithParams("api/member/category/findAllProductAndCategory","GET",{pageNum:1,pageSize:6},function(result){
+		 var product_content=new Vue({
+			 el:"#product_content",
+			 data:{
+				 categoryList:result.data
+			 }
+	     });
+	 });	 
+  }
+    
+</script>
+</body>
+</html>
+
